@@ -1,14 +1,14 @@
 # Laravel Mandrill Driver
 
-This package re-enables Mandrill driver functionality using teh Mail facade in Laravel 6+.
+This package re-enables Mandrill driver functionality using the Mail facade in Laravel 6+.
 
-To install the package in your project you need to require the package via composer:
+To install the package in your project, you need to require the package via composer:
 
 ```bash
 composer require therobfonz/laravel-mandrill-driver
 ```
 
-To add your Mandrill secret key, add teh folling lines to `config\services.php`
+To add your Mandrill secret key, add the folling lines to `config\services.php`
 
 ```php
 'mandrill' => [
