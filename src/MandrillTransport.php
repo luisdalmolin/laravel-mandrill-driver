@@ -2,6 +2,7 @@
 
 namespace LaravelMandrill;
 
+use Illuminate\Mail\Transport\Transport;
 use Swift_Mime_SimpleMessage;
 use GuzzleHttp\ClientInterface;
 
