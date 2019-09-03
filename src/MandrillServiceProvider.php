@@ -2,10 +2,13 @@
 
 namespace LaravelMandrill;
 
-use Illuminate\Mail\MailServiceProvider;
+use GuzzleHttp\ClientInterface;
+use Illuminate\Mail\MailServiceProvider as MailProvider;
 use LaravelMandrill\MandrillTransport;
+use LaravelMandrill\MandrillTransportManager;
+use Swift_Mailer;
 
-class MandrillServiceProvider extends MailServiceProvider
+class MandrillServiceProvider extends MailProvider
 {
     /**
      * Register the service provider.
@@ -14,30 +17,12 @@ class MandrillServiceProvider extends MailServiceProvider
      */
     public function register()
     {
-        $this->registerMandrillSwiftMailer();
-    }
-
-    /**
-     * Register the Swift Mailer instance.
-     *
-     * @return void
-     */
-    public function registerSwiftMailer()
-    {
+        parent::register();
+        
         if ($this->app['config']['mail.driver'] == 'mandrill') {
-            $this->registerMandrillSwiftMailer();
-        } else {
-            parent::registerSwiftMailer();
+            $this->app->singleton('swift.transport', function ($app) {
+                return new MandrillTransportManager($app);
+            });
         }
-    }
-
-    /**
-     * Register the Mandrill swift mailer
-     */
-    public function registerMandrillSwiftMailer()
-    {
-        $this->app->singleton('swift.mailer', function ($app) {
-            return new \Swift_Mailer(new MandrillTransport());
-        });
     }
 }
