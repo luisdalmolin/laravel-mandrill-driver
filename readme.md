@@ -8,7 +8,7 @@ To install the package in your project, you need to require the package via comp
 composer require therobfonz/laravel-mandrill-driver
 ```
 
-To add your Mandrill secret key, add the folling lines to `config\services.php`
+To add your Mandrill secret key, add the following lines to `config\services.php`
 
 ```php
 'mandrill' => [
