@@ -36,7 +36,7 @@ class MandrillServiceProvider extends MailServiceProvider
      */
     public function registerMandrillSwiftMailer()
     {
-        $this->app['swift.mailer'] = $this->app->singleton(function ($app) {
+        $this->app->singleton('swift.mailer', function ($app) {
             return new \Swift_Mailer(new MandrillTransport());
         });
     }
