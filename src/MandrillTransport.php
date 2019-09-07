@@ -2,9 +2,9 @@
 
 namespace LaravelMandrill;
 
+use GuzzleHttp\ClientInterface;
 use Illuminate\Mail\Transport\Transport;
 use Swift_Mime_SimpleMessage;
-use GuzzleHttp\ClientInterface;
 
 class MandrillTransport extends Transport
 {
