@@ -2,8 +2,10 @@
 
 namespace LaravelMandrill;
 
+use GuzzleHttp\Client;
 use Illuminate\Mail\MailManager;
 use Illuminate\Support\ServiceProvider;
+use LaravelMandrill\MandrillTransport;
 
 class MandrillServiceProvider extends ServiceProvider
 {
@@ -12,8 +14,8 @@ class MandrillServiceProvider extends ServiceProvider
         $this->app->resolving(MailManager::class, function (MailManager $manager) {
             $manager->extend('mandrill', function () {
                 $config = $this->app['config']->get('services.mandrill', []);
-                return new \LaravelMandrill\MandrillTransport(
-                    new \GuzzleHttp\Client($config), $config['secret']
+                return new MandrillTransport(
+                    new Client($config), $config['secret']
                 );
             });
         });
