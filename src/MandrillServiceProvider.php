@@ -5,7 +5,6 @@ namespace LaravelMandrill;
 use GuzzleHttp\Client;
 use Illuminate\Mail\MailManager;
 use Illuminate\Support\ServiceProvider;
-use LaravelMandrill\MandrillTransport;
 
 class MandrillServiceProvider extends ServiceProvider
 {
