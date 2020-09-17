@@ -1,6 +1,6 @@
 # Laravel Mandrill Driver
 
-This package re-enables Mandrill driver functionality using the Mail facade in Laravel 6+.
+This package re-enables Mandrill driver functionality using the Mail facade in Laravel 6+ and Lumen.
 
 To install the package in your project, you need to require the package via Composer:
 
@@ -16,7 +16,7 @@ To add your Mandrill secret key, add the following lines to `config\services.php
 ],
 ```
 
-## Laravel 7 Installation
+## Laravel 7+ Installation
 
 Add the Mandrill mailer to your `config\mail.php`:
 
@@ -38,4 +38,12 @@ As before, you can set the `MAIL_DRIVER` value in your env to `mandrill` to enab
 
 ```php
 MAIL_DRIVER=mandrill
+```
+
+## Lumen Installation
+
+Add the following line to `bootstrap/app.php`
+
+```php
+$app->register(LaravelMandrill\MandrillServiceProvider::class);
 ```
