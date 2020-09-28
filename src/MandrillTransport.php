@@ -42,7 +42,7 @@ class MandrillTransport extends Transport
     {
         $this->beforeSendPerformed($message);
 
-        $this->client->request('POST', 'https://mandrillapp.com/api/1.0/messages/send-raw.json', [
+        $response = $this->client->request('POST', 'https://mandrillapp.com/api/1.0/messages/send-raw.json', [
             'form_params' => [
                 'key' => $this->key,
                 'to' => $this->getTo($message),
@@ -50,6 +50,10 @@ class MandrillTransport extends Transport
                 'async' => true,
             ],
         ]);
+
+        $message->getHeaders()->addTextHeader(
+            'X-Message-ID', $this->getMessageId($response)
+        );
 
         $this->sendPerformed($message);
 
