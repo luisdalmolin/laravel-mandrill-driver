@@ -4,6 +4,8 @@ namespace LaravelMandrill;
 
 use GuzzleHttp\ClientInterface;
 use Illuminate\Mail\Transport\Transport;
+use Illuminate\Support\Arr;
+use Psr\Http\Message\ResponseInterface;
 use Swift_Mime_SimpleMessage;
 
 class MandrillTransport extends Transport
@@ -42,7 +44,7 @@ class MandrillTransport extends Transport
     {
         $this->beforeSendPerformed($message);
 
-        $this->client->request('POST', 'https://mandrillapp.com/api/1.0/messages/send-raw.json', [
+        $response = $this->client->request('POST', 'https://mandrillapp.com/api/1.0/messages/send-raw.json', [
             'form_params' => [
                 'key' => $this->key,
                 'to' => $this->getTo($message),
@@ -51,9 +53,28 @@ class MandrillTransport extends Transport
             ],
         ]);
 
+        $message->getHeaders()->addTextHeader(
+            'X-Message-ID', $this->getMessageId($response)
+        );
+
         $this->sendPerformed($message);
 
         return $this->numberOfRecipients($message);
+    }
+
+    /**
+     * Get the message ID from the response.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response
+     *
+     * @return string
+     * @throws \JsonException
+     */
+    protected function getMessageId(ResponseInterface $response)
+    {
+        $response = json_parse_strict((string) $response->getBody());
+
+        return Arr::get($response, '0._id');
     }
 
     /**
