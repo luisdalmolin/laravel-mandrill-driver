@@ -72,7 +72,7 @@ class MandrillTransport extends Transport
      */
     protected function getMessageId(ResponseInterface $response)
     {
-        $response = json_parse_strict((string) $response->getBody());
+        $response = json_decode((string) $response->getBody(), true);
 
         return Arr::get($response, '0._id');
     }
