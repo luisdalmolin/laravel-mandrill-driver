@@ -1,42 +1,13 @@
 <?php
-
-namespace LaravelMandrill;
+namespace IGD\Mandrill;
 
 use GuzzleHttp\ClientInterface;
-use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Swift_Mime_SimpleMessage;
 
-class MandrillTransport extends Transport
+class Transport extends \Illuminate\Mail\Transport\Transport
 {
-    /**
-     * Guzzle client instance.
-     *
-     * @var \GuzzleHttp\ClientInterface
-     */
-    protected $client;
-
-    /**
-     * The Mandrill API key.
-     *
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * Create a new Mandrill transport instance.
-     *
-     * @param  \GuzzleHttp\ClientInterface  $client
-     * @param  string  $key
-     * @return void
-     */
-    public function __construct(ClientInterface $client, $key)
-    {
-        $this->key = $key;
-        $this->client = $client;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -102,26 +73,5 @@ class MandrillTransport extends Transport
         }
 
         return $to;
-    }
-
-    /**
-     * Get the API key being used by the transport.
-     *
-     * @return string
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * Set the API key being used by the transport.
-     *
-     * @param  string  $key
-     * @return string
-     */
-    public function setKey($key)
-    {
-        return $this->key = $key;
     }
 }
