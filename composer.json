@@ -1,5 +1,5 @@
 {
-    "name": "therobfonz/laravel-mandrill-driver",
+    "name": "igdwebdev/laravel-mandrill-driver",
     "description": "Mandrill Driver for Laravel 7+",
     "type": "library",
     "keywords": [
@@ -11,6 +11,10 @@
         {
             "name": "Rob Fonseca",
             "email": "robfonseca@gmail.com"
+        },
+        {
+            "name": "McCaulay Hudson",
+            "email": "mccaulay.hudson@interiorgoodsdirect.com"
         }
     ],
     "require": {

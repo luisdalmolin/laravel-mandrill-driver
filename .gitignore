@@ -2,5 +2,6 @@
 composer.phar
 composer.lock
 .DS_Store
+.idea/
 Thumbs.db
 phpunit.xml
