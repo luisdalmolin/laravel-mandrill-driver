@@ -15,37 +15,15 @@ class Transport extends \Illuminate\Mail\Transport\Transport
     {
         $this->beforeSendPerformed($message);
 
-        $response = $this->client->request('POST', 'https://mandrillapp.com/api/1.0/messages/send-raw.json', [
-            'form_params' => [
-                'key' => $this->key,
-                'to' => $this->getTo($message),
-                'raw_message' => $message->toString(),
-                'async' => true,
-            ],
-        ]);
+        $response = Mandrill::message()->sendRaw($this->getTo($message), $message->toString());
 
         $message->getHeaders()->addTextHeader(
-            'X-Message-ID', $this->getMessageId($response)
+            'X-Message-ID', $response[0]->_id,
         );
 
         $this->sendPerformed($message);
 
         return $this->numberOfRecipients($message);
-    }
-
-    /**
-     * Get the message ID from the response.
-     *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     *
-     * @return string
-     * @throws \JsonException
-     */
-    protected function getMessageId(ResponseInterface $response)
-    {
-        $response = json_decode((string) $response->getBody(), true);
-
-        return Arr::get($response, '0._id');
     }
 
     /**

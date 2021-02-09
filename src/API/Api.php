@@ -33,7 +33,7 @@ class Api
     public function __construct()
     {
         // Initalise the config
-        $this->config = config('app.services.mandrill');
+        $this->config = config('services.mandrill');
 
         $this->path = '/';
 
@@ -43,17 +43,14 @@ class Api
                 'Content-Type' => 'application/json',
             ],
             'base_uri' => 'https://mandrillapp.com/api/1.0/',
-            'defaults' => [
-                'query'  => [
-                    'key' => $this->config['secret'],
-                ],
-            ]
         ]);
     }
 
     /**
      * Dynamically allow static calls of methods.
      *
+     * @param string $name
+     * @param mixed $arguments
      * @return self
      */
     public static function __callStatic($name, $arguments)
@@ -66,6 +63,7 @@ class Api
     /**
      * Set the path of the api.
      *
+     * @param string $path
      * @return self
      */
     protected function setPath(string $path): self
@@ -78,18 +76,30 @@ class Api
      * Perform a request to the API service.
      *
      * @param string $method
+     * @param string $path
+     * @param array $query
      * @param array $params
      * @return object
      */
-    protected function request(string $method, string $path, array $query = [], array $params = [], bool $auth = false)
+    protected function request(string $method, string $path, array $query = [], array $params = [])
     {
-        $headers = [];
+        $auth = [
+            'key' => $this->config['secret'],
+        ];
+
+        // Link api key with either post parameters or get parameters.
+        if (!empty($params)) {
+            $params = array_merge($auth, $params);
+        } else if (!empty($query)) {
+            $query = array_merge($auth, $query);
+        } else {
+            $query = $auth;
+        }
 
         // Perform request
-        $response = $this->client->request($method, $this->path . $path . '.json', [
+        $response = $this->client->request($method, $this->path . '/' . $path . '.json', [
             'query' => $query,
             'json' => $params,
-            'headers' => $headers,
         ]);
         $contents = (string) $response->getBody();
         return json_decode($contents);
@@ -100,12 +110,11 @@ class Api
      *
      * @param string $path
      * @param array $query
-     * @param bool $auth
      * @return object
      */
-    protected function get(string $path, array $query = [], bool $auth = false)
+    protected function get(string $path, array $query = [])
     {
-        return $this->request('GET', $path, $query, [], $auth);
+        return $this->request('GET', $path, $query, []);
     }
 
     /**
@@ -114,12 +123,11 @@ class Api
      * @param string $path
      * @param array $query
      * @param array $params
-     * @param bool $auth
      * @return object
      */
-    protected function post(string $path, array $query = [], array $params = [], bool $auth = false)
+    protected function post(string $path, array $query = [], array $params = [])
     {
-        return $this->request('POST', $path, $query, $params, $auth);
+        return $this->request('POST', $path, $query, $params);
     }
 
     /**
@@ -128,12 +136,11 @@ class Api
      * @param string $path
      * @param array $query
      * @param array $params
-     * @param bool $auth
      * @return object
      */
-    protected function put(string $path, array $query = [], array $params = [], bool $auth = false)
+    protected function put(string $path, array $query = [], array $params = [])
     {
-        return $this->request('PUT', $path, $query, $params, $auth);
+        return $this->request('PUT', $path, $query, $params);
     }
 
     /**
@@ -142,11 +149,10 @@ class Api
      * @param string $path
      * @param array $query
      * @param array $params
-     * @param bool $auth
      * @return object
      */
-    protected function delete(string $path, array $query = [], array $params = [], bool $auth = false)
+    protected function delete(string $path, array $query = [], array $params = [])
     {
-        return $this->request('DELETE', $path, $query, $params, $auth);
+        return $this->request('DELETE', $path, $query, $params);
     }
 }

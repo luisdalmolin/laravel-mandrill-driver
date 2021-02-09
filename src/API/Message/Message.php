@@ -6,31 +6,13 @@ use IGD\Mandrill\API\Resource;
 class Message extends Resource
 {
     /**
-     * The message id.
-     *
-     * @var int
-     */
-    public $id = null;
-
-    /**
-     * Initialise the message with a message id.
-     *
-     * @param string $messageId
-     */
-    public function __construct(string $messageId)
-    {
-        parent::__construct();
-        $this->id = $messageId;
-    }
-
-    /**
      * Load the message information.
      *
      * @return self
      */
     public function load()
     {
-        return $this->data((new MessageApi())->find($this->id));
+        return $this->data(Mandrill::message()->find($this->_id));
     }
 
     /**
@@ -40,6 +22,6 @@ class Message extends Resource
      */
     public function content()
     {
-        return (new MessageApi())->content($this->id);
+        return Mandrill::message()->content($this->_id);
     }
 }

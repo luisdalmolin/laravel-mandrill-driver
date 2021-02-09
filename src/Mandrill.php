@@ -15,4 +15,14 @@ class Mandrill
     {
         return new Builder(new MessageApi());
     }
+
+    /**
+     * Get the message api.
+     *
+     * @return \IGD\Mandrill\API\Message\MessageApi
+     */
+    public function message(): MessageApi
+    {
+        return new MessageApi();
+    }
 }

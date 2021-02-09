@@ -26,11 +26,6 @@ class Resource implements Arrayable
     public function data($data)
     {
         foreach ($data as $key => $value) {
-            // Handle dates
-            if ($key == 'createdAt' || $key == 'updatedAt') {
-                $value = Carbon::parse($value);
-            }
-
             $this->$key = $value;
         }
         return $this;
