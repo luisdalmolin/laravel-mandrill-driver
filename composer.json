@@ -1,5 +1,5 @@
 {
-    "name": "igdwebdev/laravel-mandrill-driver",
+    "name": "igd/laravel-mandrill-driver",
     "description": "Mandrill Driver for Laravel 7+",
     "type": "library",
     "keywords": [
