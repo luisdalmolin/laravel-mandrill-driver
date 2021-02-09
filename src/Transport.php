@@ -5,6 +5,7 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Swift_Mime_SimpleMessage;
+use IGD\Mandrill\Facades\Mandrill;
 
 class Transport extends \Illuminate\Mail\Transport\Transport
 {
