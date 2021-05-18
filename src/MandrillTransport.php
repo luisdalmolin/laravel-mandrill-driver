@@ -32,13 +32,14 @@ class MandrillTransport extends Transport
     /**
      * Create a new Mandrill transport instance.
      *
-     * @param  \GuzzleHttp\ClientInterface  $client
-     * @param  string  $key
-     * @return void
+     * @param \GuzzleHttp\ClientInterface $client
+     * @param string $key
+     * @param array $headers
      */
-    public function __construct(ClientInterface $client, $key)
+    public function __construct(ClientInterface $client, string $key, array $headers = [])
     {
         $this->key = $key;
+        $this->setHeaders($headers);
         $this->client = $client;
     }
 
@@ -137,18 +138,22 @@ class MandrillTransport extends Transport
     }
 
     /**
-     * Add custom header, check docs for available options at:
-     * https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers ?? [];
     }
 
-    public function setHeaders(array $headers)
+    /**
+     * Add custom header, check docs for available options at:
+     * https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
+     *
+     * @param array|null $headers
+     */
+    public function setHeaders(array $headers = null)
     {
-        $this->headers = $headers;
+        $this->headers = $headers ?? [];
     }
 }

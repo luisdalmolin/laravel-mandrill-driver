@@ -14,7 +14,7 @@ class MandrillServiceProvider extends ServiceProvider
             $manager->extend('mandrill', function () {
                 $config = $this->app['config']->get('services.mandrill', []);
                 return new MandrillTransport(
-                    new Client($config), $config['secret']
+                    new Client($config), $config['secret'], $config['headers']
                 );
             });
         });
