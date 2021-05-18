@@ -25,6 +25,11 @@ class MandrillTransport extends Transport
     protected $key;
 
     /**
+     * @var array
+     */
+    private $headers;
+
+    /**
      * Create a new Mandrill transport instance.
      *
      * @param  \GuzzleHttp\ClientInterface  $client
@@ -54,8 +59,14 @@ class MandrillTransport extends Transport
         ]);
 
         $message->getHeaders()->addTextHeader(
-            'X-Message-ID', $this->getMessageId($response)
+            'X-Message-ID', $this->getMessageId($response),
         );
+
+        foreach ($this->getHeaders() as $key => $value) {
+            $message->getHeaders()->addTextHeader(
+                $key, $value,
+            );
+        }
 
         $this->sendPerformed($message);
 
@@ -123,5 +134,21 @@ class MandrillTransport extends Transport
     public function setKey($key)
     {
         return $this->key = $key;
+    }
+
+    /**
+     * Add custom header, check docs for available options at:
+     * https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers ?? [];
+    }
+
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
     }
 }
