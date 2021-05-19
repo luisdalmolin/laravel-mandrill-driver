@@ -16,6 +16,19 @@ To add your Mandrill secret key, add the following lines to `config\services.php
 ],
 ```
 
+You can also add custom Mandrill headers to each email sent, for this you need to add the headers array in the following format to `config\services.php`:
+
+```php
+'mandrill' => [
+    'secret' => env('MANDRILL_KEY'),
+    'headers' => [
+        'header-example-x' => env('MANDRILL_HEADER_X'),
+        'header-example-y' => env('MANDRILL_HEADER_Y'),
+    ]
+],
+```
+all the valid options in Mandrill docs at: https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
+
 ## Laravel 7+ Installation
 
 Add the Mandrill mailer to your `config\mail.php`:

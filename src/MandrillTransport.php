@@ -7,6 +7,8 @@ use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Swift_Mime_SimpleMessage;
+use Swift_Transport;
+use Swift_Events_SendEvent;
 
 class MandrillTransport extends Transport
 {
@@ -25,16 +27,45 @@ class MandrillTransport extends Transport
     protected $key;
 
     /**
+     * @var array
+     */
+    private $headers;
+
+    /**
      * Create a new Mandrill transport instance.
      *
-     * @param  \GuzzleHttp\ClientInterface  $client
-     * @param  string  $key
-     * @return void
+     * @param \GuzzleHttp\ClientInterface $client
+     * @param string $key
+     * @param array $headers
      */
-    public function __construct(ClientInterface $client, $key)
+    public function __construct(ClientInterface $client, string $key, array $headers = [])
     {
         $this->key = $key;
+        $this->setHeaders($headers);
         $this->client = $client;
+    }
+
+    /**
+     * Iterate through registered plugins and execute plugins' methods.
+     *
+     * @param  \Swift_Mime_SimpleMessage  $message
+     * @return void
+     */
+    protected function beforeSendPerformed(Swift_Mime_SimpleMessage $message)
+    {
+        $event = new Swift_Events_SendEvent($this, $message);
+
+        foreach ($this->plugins as $plugin) {
+            if (method_exists($plugin, 'beforeSendPerformed')) {
+                $plugin->beforeSendPerformed($event);
+            }
+        }
+
+        foreach ($this->getHeaders() as $key => $value) {
+            $message->getHeaders()->addTextHeader(
+                $key, $value,
+            );
+        }
     }
 
     /**
@@ -123,5 +154,25 @@ class MandrillTransport extends Transport
     public function setKey($key)
     {
         return $this->key = $key;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers ?? [];
+    }
+
+    /**
+     * Add custom header, check docs for available options at:
+     * https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
+     *
+     * @param array|null $headers
+     */
+    public function setHeaders(array $headers = null)
+    {
+        $this->headers = $headers ?? [];
     }
 }
