@@ -13,8 +13,9 @@ class MandrillServiceProvider extends ServiceProvider
         $this->app->resolving(MailManager::class, function (MailManager $manager) {
             $manager->extend('mandrill', function () {
                 $config = $this->app['config']->get('services.mandrill', []);
+                $headers = $config['headers'] ?? [];
                 return new MandrillTransport(
-                    new Client($config), $config['secret'], $config['headers']
+                    new Client($config), $config['secret'], $headers
                 );
             });
         });
