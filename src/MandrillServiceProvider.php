@@ -2,22 +2,27 @@
 
 namespace LaravelMandrill;
 
-use GuzzleHttp\Client;
-use Illuminate\Mail\MailManager;
+use Illuminate\Support\Facades\Mail;
+use MailchimpTransactional\ApiClient;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class MandrillServiceProvider extends ServiceProvider
 {
-    public function register()
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
     {
-        $this->app->resolving(MailManager::class, function (MailManager $manager) {
-            $manager->extend('mandrill', function () {
-                $config = $this->app['config']->get('services.mandrill', []);
-                $headers = $config['headers'] ?? [];
-                return new MandrillTransport(
-                    new Client($config), $config['secret'], $headers
-                );
-            });
+        Mail::extend('mandrill', function () {
+            $client = new ApiClient();
+            $client->setApiKey(Config::get('services.mandrill.secret'));
+
+            $headers = Config::get('services.mandrill.headers', []);
+
+            return new MandrillTransport($client, $headers);
         });
     }
 }
