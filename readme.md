@@ -1,6 +1,6 @@
 # Laravel Mandrill Driver
 
-This package re-enables Mandrill driver functionality using the Mail facade in Laravel 6+ and Lumen.
+This package re-enables Mandrill driver functionality using the Mail facade in Laravel 6+.
 
 To install the package in your project, you need to require the package via Composer:
 
@@ -29,7 +29,18 @@ You can also add custom Mandrill headers to each email sent, for this you need t
 ```
 all the valid options in Mandrill docs at: https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
 
+## Versions
+
+| Laravel Version  | Mandrill package version         |
+|------------------|----------------------------------|
+| 9+               | 4.x                              |
+| 6, 7, 8          | 3.x                              |
+
 ## Laravel 7+ Installation
+
+```bash
+composer require therobfonz/laravel-mandrill-driver:^3.0
+```
 
 Add the Mandrill mailer to your `config\mail.php`:
 
