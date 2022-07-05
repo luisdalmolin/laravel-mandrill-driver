@@ -29,7 +29,19 @@ class MandrillTransport extends AbstractTransport
         $this->mailchimp->messages->sendRaw([
             'raw_message' => $message->toString(),
             'async' => true,
+            'to' => $this->getTo($message),
         ]);
+    }
+
+    protected function getTo(SentMessage $message): array
+    {
+        $to = [];
+
+        foreach ($message->getEnvelope()->getRecipients() as $recipient) {
+            $to[] = $recipient->getAddress();
+        }
+
+        return $to;
     }
 
     /**
