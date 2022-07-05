@@ -5,6 +5,7 @@ namespace LaravelMandrill;
 use MailchimpTransactional\ApiClient;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
+use Symfony\Component\Mime\Email;
 
 class MandrillTransport extends AbstractTransport
 {
@@ -33,15 +34,59 @@ class MandrillTransport extends AbstractTransport
         ]);
     }
 
+    /**
+     * Retrieves recipients from the original message or envelope.
+     *
+     * @param SentMessage $message
+     * @return array
+     */
     protected function getTo(SentMessage $message): array
     {
-        $to = [];
+        $recipients = [];
 
-        foreach ($message->getEnvelope()->getRecipients() as $recipient) {
-            $to[] = $recipient->getAddress();
+        $original_message = $message->getOriginalMessage();
+
+        if ($original_message instanceof Email) {
+
+            if (!empty($original_message->getTo())) {
+                foreach ($original_message->getTo() as $to) {
+                    $recipients[] = [
+                        'email' => $to->getEncodedAddress(),
+                        'name' => $to->getEncodedName(),
+                        'type' => 'to',
+                    ];
+                }
+            }
+
+            if (!empty($original_message->getCc())) {
+                foreach ($original_message->getCc() as $cc) {
+                    $recipients[] = [
+                        'email' => $cc->getEncodedAddress(),
+                        'name' => $cc->getEncodedName(),
+                        'type' => 'cc',
+                    ];
+                }
+            }
+
+            if (!empty($original_message->getBcc())) {
+                foreach ($original_message->getBcc() as $bcc) {
+                    $recipients[] = [
+                        'email' => $bcc->getEncodedAddress(),
+                        'name' => $bcc->getEncodedName(),
+                        'type' => 'bcc',
+                    ];
+                }
+            }
         }
 
-        return $to;
+        // Fall-back to envelope recipients
+        if (empty($recipients)) {
+            foreach ($message->getEnvelope()->getRecipients() as $recipient) {
+                $recipients[] = $recipient->getAddress();
+            }
+        }
+
+        return $recipients;
     }
 
     /**
