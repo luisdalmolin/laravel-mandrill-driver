@@ -50,31 +50,19 @@ class MandrillTransport extends AbstractTransport
 
             if (!empty($original_message->getTo())) {
                 foreach ($original_message->getTo() as $to) {
-                    $recipients[] = [
-                        'email' => $to->getEncodedAddress(),
-                        'name' => $to->getEncodedName(),
-                        'type' => 'to',
-                    ];
+                    $recipients[] = $to->getEncodedAddress();
                 }
             }
 
             if (!empty($original_message->getCc())) {
                 foreach ($original_message->getCc() as $cc) {
-                    $recipients[] = [
-                        'email' => $cc->getEncodedAddress(),
-                        'name' => $cc->getEncodedName(),
-                        'type' => 'cc',
-                    ];
+                    $recipients[] = $cc->getEncodedAddress();
                 }
             }
 
             if (!empty($original_message->getBcc())) {
                 foreach ($original_message->getBcc() as $bcc) {
-                    $recipients[] = [
-                        'email' => $bcc->getEncodedAddress(),
-                        'name' => $bcc->getEncodedName(),
-                        'type' => 'bcc',
-                    ];
+                    $recipients[] = $bcc->getEncodedAddress();
                 }
             }
         }
@@ -82,7 +70,7 @@ class MandrillTransport extends AbstractTransport
         // Fall-back to envelope recipients
         if (empty($recipients)) {
             foreach ($message->getEnvelope()->getRecipients() as $recipient) {
-                $recipients[] = $recipient->getAddress();
+                $recipients[] = $recipient->getEncodedAddress();
             }
         }
 
