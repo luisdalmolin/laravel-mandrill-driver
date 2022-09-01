@@ -16,6 +16,7 @@ class MandrillTransport extends AbstractTransport
      */
     public function __construct(protected ApiClient $mailchimp, protected array $headers)
     {
+        parent::__construct();
     }
 
     /**
