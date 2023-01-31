@@ -18,8 +18,8 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "illuminate/support": "^9.0",
+        "php": "^8.1",
+        "illuminate/support": "^10.0",
         "mailchimp/transactional": "^1.0",
         "symfony/mailer": "^6.0"
     },
