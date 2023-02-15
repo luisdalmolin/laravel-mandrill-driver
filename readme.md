@@ -33,7 +33,8 @@ all the valid options in Mandrill docs at: https://mailchimp.com/developer/trans
 
 | Laravel Version  | Mandrill package version         |
 |------------------|----------------------------------|
-| 9+               | 4.x                              |
+| 10               | 5.x                              |
+| 9                | 4.x                              |
 | 6, 7, 8          | 3.x                              |
 
 ## Laravel 7+ Installation
