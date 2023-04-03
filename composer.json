@@ -25,7 +25,8 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^9.5.10"
+        "phpunit/phpunit": "^9.5.10",
+        "orchestra/testbench": "^v7.24"
     },
     "autoload": {
         "psr-4": {
