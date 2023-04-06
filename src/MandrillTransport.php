@@ -2,10 +2,14 @@
 
 namespace LaravelMandrill;
 
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Message;
 use MailchimpTransactional\ApiClient;
+use Symfony\Component\Mailer\Envelope;
+use Symfony\Component\Mime\RawMessage;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
-use Symfony\Component\Mime\Email;
+
 
 class MandrillTransport extends AbstractTransport
 {
@@ -23,15 +27,34 @@ class MandrillTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
+    public function send(RawMessage $message, Envelope $envelope = null): ?SentMessage
+    {
+        // Set headers must take place before SentMessage is formed or it will not be part
+        // of the payload submitted to the Mandrill API.
+        $message = $this->setHeaders($message);
+        
+        return parent::send($message, $envelope);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function doSend(SentMessage $message): void
     {
-        $message = $this->setHeaders($message);
-
-        $this->mailchimp->messages->sendRaw([
+        $data = $this->mailchimp->messages->sendRaw([
             'raw_message' => $message->toString(),
             'async' => true,
             'to' => $this->getTo($message),
         ]);
+
+        // If Mandrill _id was returned, set it as the message id for
+        // use elsewhere in the application.
+        if (!empty($data[0]?->_id)) {
+            $messageId = $data[0]->_id;
+            $message->setMessageId($messageId);
+            // Convention seems to be to set this header on the original for access later.
+            $message->getOriginalMessage()->getHeaders()->addHeader('X-Message-ID', $messageId);
+        }
     }
 
     /**
@@ -80,14 +103,13 @@ class MandrillTransport extends AbstractTransport
     /**
      * Set headers of email.
      *
-     * @param SentMessage  $message
+     * @param Message $message
      *
-     * @return SentMessage
+     * @return Message
      */
-    protected function setHeaders(SentMessage $message): SentMessage
-    {
-        $messageHeaders = $message->getOriginalMessage()->getHeaders();
-
+    protected function setHeaders(Message $message): Message
+    {   
+        $messageHeaders = $message->getHeaders();
         $messageHeaders->addTextHeader('X-Dump', 'dumpy');
 
         foreach ($this->headers as $name => $value) {
@@ -105,5 +127,18 @@ class MandrillTransport extends AbstractTransport
     public function __toString(): string
     {
         return 'mandrill';
+    }
+
+    /**
+     * Replace Mandrill client.
+     * This is used primarily for testing but could in theory allow other use cases
+     * e.g. Configuring proxying in Guzzle.
+     * 
+     * @param ApiClient $client [description]
+     * @return void
+     */
+    public function setClient(ApiClient $client): void
+    {
+        $this->mailchimp = $client;
     }
 }
