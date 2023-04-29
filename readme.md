@@ -30,7 +30,7 @@ You can also add custom Mandrill headers to each email sent, for this you need t
 all the valid options in Mandrill docs at: https://mailchimp.com/developer/transactional/docs/smtp-integration/#customize-messages-with-smtp-headers
 
 
-### Accessing Mandrill message ID
+#### Accessing Mandrill message ID
 Mandrill message ID's for sent emails can be accessed by listening to the `MessageSent` event. It can then be read either from the sent data or the X-Message-ID header.
 
 ```php
