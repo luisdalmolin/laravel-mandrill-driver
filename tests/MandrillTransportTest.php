@@ -14,7 +14,7 @@ use MailchimpTransactional\ApiClient;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Mail\Events\MessageSent;
 
-class MailerSendTransportTest extends TestCase
+class MandrillTransportTest extends TestCase
 {
     protected function getPackageProviders($app)
     {
