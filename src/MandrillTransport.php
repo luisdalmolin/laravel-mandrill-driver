@@ -47,6 +47,11 @@ class MandrillTransport extends AbstractTransport
             'to' => $this->getTo($message),
         ]);
 
+        if ($data instanceof \GuzzleHttp\Exception\RequestException)
+        {
+            throw new MandrillTransportException($data->getMessage(), $data->getCode(), $data);
+        }
+
         // If Mandrill _id was returned, set it as the message id for
         // use elsewhere in the application.
         if (!empty($data[0]?->_id)) {
