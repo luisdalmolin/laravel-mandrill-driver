@@ -47,15 +47,10 @@ Event::listen(\Illuminate\Mail\Events\MessageSent::class, function($event)
 
 | Laravel Version  | Mandrill package version         |
 |------------------|----------------------------------|
+| 11               | 5.x                              |
 | 10               | 5.x                              |
 | 9                | 4.x                              |
 | 6, 7, 8          | 3.x                              |
-
-## Laravel 7+ Installation
-
-```bash
-composer require therobfonz/laravel-mandrill-driver:^3.0
-```
 
 Add the Mandrill mailer to your `config\mail.php`:
 
