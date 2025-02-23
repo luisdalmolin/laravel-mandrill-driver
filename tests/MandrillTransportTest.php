@@ -3,16 +3,17 @@
 namespace LaravelMandrill\Tests;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\HandlerStack;
-use Illuminate\Mail\Mailable;
-use GuzzleHttp\Psr7\Response;
-use Orchestra\Testbench\TestCase;
 use GuzzleHttp\Handler\MockHandler;
-use Illuminate\Support\Facades\Mail;
-use MailchimpTransactional\ApiClient;
-use Illuminate\Support\Facades\Event;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Mail\Events\MessageSent;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use LaravelMandrill\MandrillTransportException;
+use MailchimpTransactional\ApiClient;
+use Orchestra\Testbench\TestCase;
 
 class MandrillTransportTest extends TestCase
 {
@@ -56,12 +57,7 @@ class MandrillTransportTest extends TestCase
         $this->mockMandrillAPiResponces($mock, $history);
 
         // Setup test email.
-        $testMail = new class() extends Mailable {
-            public function build()
-            {
-                return $this->from('mandrill@test.com', 'Test') ->html('Hello World');
-            }
-        };
+        $testMail = $this->getMailable();
 
         // Ensure event contains expected data.
         Event::listen(MessageSent::class, function($event)
@@ -105,14 +101,7 @@ class MandrillTransportTest extends TestCase
         ]);
         $this->mockMandrillAPiResponces($mock, $history);
 
-        $testMail = new class() extends Mailable {
-            public function build()
-            {
-                return $this->from('mandrill@test.com', 'Test')
-                    ->html('Hello World')
-                    ->subject('Testing things');
-            }
-        };
+        $testMail = $this->getMailable();
 
         // Trigger event
         Mail::to('testemail@example.com')->send($testMail);
@@ -123,6 +112,36 @@ class MandrillTransportTest extends TestCase
         $this->assertStringContainsString("X-MC-Subaccount: hello_world", $payload);
         $this->assertStringContainsString("X-Dump: dumpy", $payload);
         $this->assertStringContainsString("Subject: Testing things", $payload);
+    }
+
+    public function testThrowsException()
+    {
+        // tracks activity in the Mock
+        $history = [];
+
+        // Mock Mandrill API as being successful.
+        $mock = new MockHandler([
+            new Response(500,
+                ['content-type' => 'application/json'],
+                json_encode([
+                    [
+                        "type" => "https://mailchimp.com/developer/marketing/docs/errors/",
+                        "title" => "Internal Server Error",
+                        "status" => 500,
+                        "detail" => "Internal Server Error",
+                    ]
+                ])
+            )
+        ]);
+        $this->mockMandrillAPiResponces($mock, $history);
+
+        $testMail = $this->getMailable();
+
+        $this->expectException(MandrillTransportException::class);
+        $this->expectExceptionCode(500);
+        $this->expectExceptionMessage('500 Internal Server Error');
+
+        Mail::to('testemail@example.com')->send($testMail);
     }
 
     /**
@@ -156,5 +175,17 @@ class MandrillTransportTest extends TestCase
 
         // Inject this into the transport within the Mail Facade
         Mail::getFacadeRoot()->mailer('mandrill')->getSymfonyTransport()->setClient($mockApiClient);
+    }
+
+    protected function getMailable(): Mailable
+    {
+        return new class() extends Mailable {
+            public function build()
+            {
+                return $this->from('mandrill@test.com', 'Test')
+                    ->html('Hello World')
+                    ->subject('Testing things');
+            }
+        };
     }
 }

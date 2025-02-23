@@ -53,4 +53,6 @@ jobs:
       - name: Setup SQLite Database
         run: 'php vendor/bin/testbench package:create-sqlite-db'
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/pest
+        env:
+          DB_CONNECTION: sqlite
