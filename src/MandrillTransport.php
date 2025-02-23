@@ -27,7 +27,7 @@ class MandrillTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
-    public function send(RawMessage $message, ?Envelope $envelope = null): ?SentMessage
+    public function send(RawMessage $message, Envelope $envelope = null): ?SentMessage
     {
         // Set headers must take place before SentMessage is formed or it will not be part
         // of the payload submitted to the Mandrill API.
