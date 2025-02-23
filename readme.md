@@ -47,7 +47,7 @@ Event::listen(\Illuminate\Mail\Events\MessageSent::class, function($event)
 
 | Laravel Version  | Mandrill package version         |
 |------------------|----------------------------------|
-| 11               | 5.x                              |
+| 11|12            | 6.x                              |
 | 10               | 5.x                              |
 | 9                | 4.x                              |
 | 6, 7, 8          | 3.x                              |
