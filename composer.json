@@ -24,14 +24,14 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
         "mailchimp/transactional": "^1.0",
         "symfony/mailer": "^7.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4.4",
-        "phpunit/phpunit": "^10.0|^11.0",
-        "orchestra/testbench": "^9.9|^10.0"
+        "phpunit/phpunit": "^10.0|^11.0|^12.5.12",
+        "orchestra/testbench": "^9.9|^10.0|^11.0"
     },
     "autoload": {
         "psr-4": {
