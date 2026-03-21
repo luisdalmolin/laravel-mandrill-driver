@@ -77,7 +77,7 @@ class MandrillTransportTest extends TestCase
 
         // Ensure data all got posted to expected locations
         $this->assertEquals($history[0]['request']->getMethod(), 'POST');
-        $this->assertEquals($history[0]['request']->getRequestTarget(), '/api/1.0/messages/send-raw');
+        $this->assertEquals($history[0]['request']->getRequestTarget(), '/api/1.3/messages/send-raw');
         $this->assertCount(1, $history);
     }
 
